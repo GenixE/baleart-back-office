@@ -31,19 +31,29 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'lastName' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'phone' => ['required', 'string', 'max:20'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
             'name' => $request->name,
+            'lastName' => $request->lastName,
             'email' => $request->email,
+            'phone' => $request->phone,
             'password' => Hash::make($request->password),
+            'role_id' => 2, // Default role for new users
         ]);
-
         event(new Registered($user));
 
         Auth::login($user);
+
+        // Check if user has appropriate role, otherwise redirect to frontend
+//        if (!in_array($user->role_id, [1, 2])) {
+//            Auth::logout();
+//            return redirect('http://localhost:5173');
+//        }
 
         return redirect(route('dashboard', absolute: false));
     }
