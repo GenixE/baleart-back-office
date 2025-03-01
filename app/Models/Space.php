@@ -29,6 +29,19 @@ class Space extends Model
         'user_id'
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Add deleting event to handle cascade deletion
+        static::deleting(function($space) {
+            // Delete related records
+            $space->modalities()->detach();
+            $space->services()->detach();
+            $space->comments()->delete();
+        });
+    }
+
     public function spaceType()
     {
         return $this->belongsTo(SpaceType::class);

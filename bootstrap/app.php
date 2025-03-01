@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\CheckUserRole;
+use App\Http\Middleware\ShareFlashMessages;
 use App\Models\Role;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -15,7 +16,6 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias(['check.role' => CheckUserRole::class]);
-        //$middleware->append(CheckUserRole::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
