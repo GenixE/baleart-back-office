@@ -1,4 +1,14 @@
 <div class="grid grid-cols-1 gap-6">
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <div>
         <label for="name" class="block text-sm font-medium text-gray-700">Nom</label>
         <input type="text" name="name" id="name"
@@ -59,6 +69,19 @@
     </div>
 
     <div>
+        <label for="accessType" class="block text-sm font-medium text-gray-700">Tipus d'Accés</label>
+        <select name="accessType" id="accessType"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                required>
+            <option value="">Seleccionar tipus...</option>
+            <option value="B" {{ old('accessType', $space->accessType ?? '') == 'B' ? 'selected' : '' }}>Baixa</option>
+            <option value="M" {{ old('accessType', $space->accessType ?? '') == 'M' ? 'selected' : '' }}>Mitja</option>
+            <option value="A" {{ old('accessType', $space->accessType ?? '') == 'A' ? 'selected' : '' }}>Accessible
+            </option>
+        </select>
+    </div>
+
+    <div>
         <label for="space_type_id" class="block text-sm font-medium text-gray-700">Tipus d'Espai</label>
         <select name="space_type_id" id="space_type_id"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
@@ -74,15 +97,80 @@
     </div>
 
     <div>
-        <label for="address_id" class="block text-sm font-medium text-gray-700">Adreça</label>
-        <select name="address_id" id="address_id"
+        <label for="address" class="block text-sm font-medium text-gray-700">Adreça</label>
+        <input type="text" name="address" id="address"
+               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+               value="{{ old('address', $space->address->name ?? '') }}" required>
+    </div>
+
+    <div>
+        <label for="zone_id" class="block text-sm font-medium text-gray-700">Zona</label>
+        <select name="zone_id" id="zone_id"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                 required>
-            <option value="">Seleccionar adreça...</option>
-            @foreach($addresses as $address)
-                <option value="{{ $address->id }}"
-                    {{ (old('address_id', $space->address_id ?? '') == $address->id) ? 'selected' : '' }}>
-                    {{ $address->name }}
+            <option value="">Seleccionar zona...</option>
+            @foreach($zones as $zone)
+                <option value="{{ $zone->id }}"
+                    {{ (old('zone_id', $space->address->zone_id ?? '') == $zone->id) ? 'selected' : '' }}>
+                    {{ $zone->name }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+
+    <div>
+        <label for="municipality_id" class="block text-sm font-medium text-gray-700">Municipi</label>
+        <select name="municipality_id" id="municipality_id"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                required>
+            <option value="">Seleccionar municipi...</option>
+            @foreach($municipalities as $municipality)
+                <option value="{{ $municipality->id }}"
+                    {{ (old('municipality_id', $space->address->municipality_id ?? '') == $municipality->id) ? 'selected' : '' }}>
+                    {{ $municipality->name }} ({{ $municipality->island->name }})
+                </option>
+            @endforeach
+        </select>
+    </div>
+
+    <div>
+        <label for="island_id" class="block text-sm font-medium text-gray-700">Illa</label>
+        <select name="island_id" id="island_id"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                required>
+            <option value="">Seleccionar illa...</option>
+            @foreach($islands as $island)
+                <option value="{{ $island->id }}"
+                    {{ (old('island_id', $space->address->municipality->island_id ?? '') == $island->id) ? 'selected' : '' }}>
+                    {{ $island->name }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+
+    <!-- Modalities -->
+    <div>
+        <label for="modalities" class="block text-sm font-medium text-gray-700">Modalitats</label>
+        <select name="modalities[]" id="modalities" multiple
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            @foreach($modalities as $modality)
+                <option value="{{ $modality->id }}"
+                    {{ in_array($modality->id, old('modalities', $space->modalities->pluck('id')->toArray() ?? [])) ? 'selected' : '' }}>
+                    {{ $modality->name }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+
+    <!-- Services -->
+    <div>
+        <label for="services" class="block text-sm font-medium text-gray-700">Serveis</label>
+        <select name="services[]" id="services" multiple
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            @foreach($services as $service)
+                <option value="{{ $service->id }}"
+                    {{ in_array($service->id, old('services', $space->services->pluck('id')->toArray() ?? [])) ? 'selected' : '' }}>
+                    {{ $service->name }}
                 </option>
             @endforeach
         </select>

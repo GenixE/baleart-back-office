@@ -10,7 +10,9 @@ use Illuminate\Database\Eloquent\Model;
 class Address extends Model
 {
     protected $fillable = [
-        'name', 'municipality_id', 'zone_id'
+        'name',
+        'zone_id',
+        'municipality_id',
     ];
 
     public $timestamps = false;
